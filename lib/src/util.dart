@@ -28,14 +28,12 @@ const Map<String, String> defaultHeaders = {
   'Content-Type': 'application/x-amz-json-1.1',
 };
 
-Map<String, dynamic> validateRequest(
-  String? service,
-) {
+Map<String, dynamic> validateRequest(String? service) {
   if (service == null) {
     return {
       'valid': false,
       'error':
-          'No Service Provided. Please pass in a service or set it in the constructor.'
+          'No Service Provided. Please pass in a service or set it in the constructor.',
     };
   }
   return {'valid': true, 'error': null};

@@ -24,12 +24,14 @@ class AwsHttpRequest {
         signedHeaders[key] = headers[key]!;
       } else {
         throw AwsRequestException(
-            message: 'AwsRequest ERROR: Signed Header Not Found: '
-                '$key could not be found in the included headers. '
-                'Provided header keys are ${headers.keys.toList()} '
-                'All headers besides [content-type, host, x-amz-date] '
-                'that are included in signedHeaders must be included in headers',
-            stackTrace: StackTrace.current);
+          message:
+              'AwsRequest ERROR: Signed Header Not Found: '
+              '$key could not be found in the included headers. '
+              'Provided header keys are ${headers.keys.toList()} '
+              'All headers besides [content-type, host, x-amz-date] '
+              'that are included in signedHeaders must be included in headers',
+          stackTrace: StackTrace.current,
+        );
       }
     }
     if (headers.containsKey('content-type')) {
@@ -51,9 +53,10 @@ class AwsHttpRequest {
     required String serviceName,
     required String stringToSign,
   }) {
-    final List<int> kDate = Hmac(sha256, utf8.encode('AWS4$key'))
-        .convert(utf8.encode(dateStamp))
-        .bytes;
+    final List<int> kDate = Hmac(
+      sha256,
+      utf8.encode('AWS4$key'),
+    ).convert(utf8.encode(dateStamp)).bytes;
     final List<int> kRegion = sign(key: kDate, msg: regionName).bytes;
     final List<int> kService = sign(key: kRegion, msg: serviceName).bytes;
     final List<int> kSigning = sign(key: kService, msg: 'aws4_request').bytes;
@@ -75,8 +78,9 @@ class AwsHttpRequest {
     final String canonicalHeadersString = canonicalHeaders.join('');
     final List<String> keyList = signedHeaders.keys.toList()..sort();
     final String signedHeaderKeys = keyList.join(';');
-    final String payloadHash =
-        sha256.convert(utf8.encode(requestBody)).toString();
+    final String payloadHash = sha256
+        .convert(utf8.encode(requestBody))
+        .toString();
     final String canonicalRequest =
         '$type\n$canonicalUri\n$canonicalQuerystring\n$canonicalHeadersString\n'
         '$signedHeaderKeys\n$payloadHash';
@@ -93,10 +97,12 @@ class AwsHttpRequest {
     required Map<String, String> signedHeaders,
   }) {
     const String algorithm = 'AWS4-HMAC-SHA256';
-    final String dateStamp =
-        DateFormat('yyyyMMdd').format(DateTime.now().toUtc());
+    final String dateStamp = DateFormat(
+      'yyyyMMdd',
+    ).format(DateTime.now().toUtc());
     final String credentialScope = '$dateStamp/$region/$service/aws4_request';
-    final String stringToSign = '$algorithm\n$amzDate\n$credentialScope\n'
+    final String stringToSign =
+        '$algorithm\n$amzDate\n$credentialScope\n'
         '${sha256.convert(utf8.encode(canonicalRequest)).toString()}';
     final String signature = getSignature(
       key: awsSecretKey,
@@ -127,7 +133,7 @@ class AwsHttpRequest {
         // We never want these keys overwritten
         'Authorization': auth,
         'x-amz-date': amzDate,
-      }
+      },
     };
   }
 
@@ -150,17 +156,10 @@ class AwsHttpRequest {
     Future<Response> response;
     switch (type) {
       case AwsRequestType.get:
-        response = client.get(
-          url,
-          headers: headers,
-        );
+        response = client.get(url, headers: headers);
         break;
       case AwsRequestType.post:
-        response = client.post(
-          url,
-          headers: headers,
-          body: utf8.encode(body),
-        );
+        response = client.post(url, headers: headers, body: utf8.encode(body));
         break;
       case AwsRequestType.delete:
         response = client.delete(
@@ -170,30 +169,22 @@ class AwsHttpRequest {
         );
         break;
       case AwsRequestType.patch:
-        response = client.patch(
-          url,
-          headers: headers,
-          body: utf8.encode(body),
-        );
+        response = client.patch(url, headers: headers, body: utf8.encode(body));
         break;
       case AwsRequestType.put:
-        response = client.put(
-          url,
-          headers: headers,
-          body: utf8.encode(body),
-        );
+        response = client.put(url, headers: headers, body: utf8.encode(body));
         break;
       case AwsRequestType.head:
-        response = client.head(
-          url,
-          headers: headers,
-        );
+        response = client.head(url, headers: headers);
         break;
     }
-    return response.timeout(timeout, onTimeout: () {
-      client.close();
-      throw TimeoutException('AwsRequest Timed Out', timeout);
-    });
+    return response.timeout(
+      timeout,
+      onTimeout: () {
+        client.close();
+        throw TimeoutException('AwsRequest Timed Out', timeout);
+      },
+    );
   }
 
   static Future<Response> send({
@@ -218,8 +209,9 @@ class AwsHttpRequest {
       path: canonicalUri,
       queryParameters: canonicalQuery,
     );
-    final String amzDate =
-        DateFormat("yyyyMMdd'T'HHmmss'Z'").format(DateTime.now().toUtc());
+    final String amzDate = DateFormat(
+      "yyyyMMdd'T'HHmmss'Z'",
+    ).format(DateTime.now().toUtc());
     final Map<String, String> signedHeadersMap = getSignedHeaders(
       headers: headers,
       signedHeaderNames: signedHeaders,

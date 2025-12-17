@@ -119,8 +119,9 @@ class AwsRequest {
     );
     if (!validation['valid']) {
       throw AwsRequestException(
-          message: 'AwsRequestException: ${validation['error']}',
-          stackTrace: StackTrace.current);
+        message: 'AwsRequestException: ${validation['error']}',
+        stackTrace: StackTrace.current,
+      );
     }
     return AwsHttpRequest.send(
       awsAccessKey: awsAccessKey,
