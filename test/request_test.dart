@@ -440,7 +440,9 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         body: '',
         timeout: const Duration(seconds: 10),
         mockFunction: mockFunction,
-      ).then((val) {}, onError: fail);
+      ).then((val) {}, onError: (Object error, StackTrace stackTrace) {
+        fail('$error');
+      });
     });
 
     test('check MockClient', () {
