@@ -14,18 +14,18 @@ void main() {
         'host': 'host',
         'x-amz-date': 'amzDate',
         'signed_header': 'signed_header',
-        'content-type': 'application/x-amz-json-1.1'
+        'content-type': 'application/x-amz-json-1.1',
       };
       final Map<String, String> generatedSignedHeaders =
           AwsHttpRequest.getSignedHeaders(
-        headers: {
-          'signed_header': 'signed_header',
-          'unsigned_header': 'unsigned_header',
-        },
-        signedHeaderNames: ['signed_header'],
-        host: 'host',
-        amzDate: 'amzDate',
-      );
+            headers: {
+              'signed_header': 'signed_header',
+              'unsigned_header': 'unsigned_header',
+            },
+            signedHeaderNames: ['signed_header'],
+            host: 'host',
+            amzDate: 'amzDate',
+          );
       expect(generatedSignedHeaders, correctSignedHeaders);
     });
 
@@ -52,28 +52,29 @@ void main() {
         'host': 'host',
         'x-amz-date': 'amzDate',
         'signed_header': 'signed_header',
-        'content-type': 'content-type'
+        'content-type': 'content-type',
       };
       final Map<String, String> generatedSignedHeaders =
           AwsHttpRequest.getSignedHeaders(
-        headers: {
-          'signed_header': 'signed_header',
-          'unsigned_header': 'unsigned_header',
-          'content-type': 'content-type'
-        },
-        signedHeaderNames: ['signed_header'],
-        host: 'host',
-        amzDate: 'amzDate',
-      );
+            headers: {
+              'signed_header': 'signed_header',
+              'unsigned_header': 'unsigned_header',
+              'content-type': 'content-type',
+            },
+            signedHeaderNames: ['signed_header'],
+            host: 'host',
+            amzDate: 'amzDate',
+          );
       expect(generatedSignedHeaders, correctSignedHeaders);
     });
   });
 
   group('sign', () {
     test('bytes', () {
-      final List<int> result =
-          AwsHttpRequest.sign(key: utf8.encode('AWS4KEY'), msg: 'stringMessage')
-              .bytes;
+      final List<int> result = AwsHttpRequest.sign(
+        key: utf8.encode('AWS4KEY'),
+        msg: 'stringMessage',
+      ).bytes;
       expect([
         106,
         73,
@@ -106,7 +107,7 @@ void main() {
         36,
         127,
         215,
-        155
+        155,
       ], result);
     });
   });
@@ -175,8 +176,9 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
   });
 
   group('getAuth', () {
-    final String dateStamp =
-        DateFormat('yyyyMMdd').format(DateTime.now().toUtc());
+    final String dateStamp = DateFormat(
+      'yyyyMMdd',
+    ).format(DateTime.now().toUtc());
 
     test('empty', () {
       final String auth = AwsHttpRequest.getAuth(
@@ -236,11 +238,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         canonicalRequest: 'canonicalRequest',
         region: 'region',
         service: 'service',
-        signedHeaders: {
-          'c': 'c',
-          'b': 'b',
-          'a': 'a',
-        },
+        signedHeaders: {'c': 'c', 'b': 'b', 'a': 'a'},
       );
       final String stringToSign =
           'AWS4-HMAC-SHA256\namzDate\n$dateStamp/region/service/aws4_request\n'
@@ -269,16 +267,13 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         auth: 'auth',
         timeout: const Duration(),
       );
-      expect(
-        {
-          'Accept': '*/*',
-          'Content-Type': 'application/x-amz-json-1.1',
-          'Authorization': 'auth',
-          'x-amz-date': 'amzDate',
-          'c': 'c',
-        },
-        res,
-      );
+      expect({
+        'Accept': '*/*',
+        'Content-Type': 'application/x-amz-json-1.1',
+        'Authorization': 'auth',
+        'x-amz-date': 'amzDate',
+        'c': 'c',
+      }, res);
     });
     test('overwrite string', () {
       final Map<String, String> res = AwsHttpRequest.getHeaders(
@@ -294,15 +289,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         auth: 'auth',
         timeout: const Duration(),
       );
-      expect(
-        {
-          'Accept': '',
-          'Content-Type': '',
-          'Authorization': 'auth',
-          'x-amz-date': 'amzDate',
-        },
-        res,
-      );
+      expect({
+        'Accept': '',
+        'Content-Type': '',
+        'Authorization': 'auth',
+        'x-amz-date': 'amzDate',
+      }, res);
     });
     test('increased timeout', () {
       final Map<String, String> res = AwsHttpRequest.getHeaders(
@@ -313,15 +305,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         auth: 'auth',
         timeout: const Duration(seconds: 123456789),
       );
-      expect(
-        {
-          'Accept': '*/*',
-          'Content-Type': 'application/x-amz-json-1.1',
-          'Authorization': 'auth',
-          'x-amz-date': 'amzDate',
-        },
-        res,
-      );
+      expect({
+        'Accept': '*/*',
+        'Content-Type': 'application/x-amz-json-1.1',
+        'Authorization': 'auth',
+        'x-amz-date': 'amzDate',
+      }, res);
     });
     test('increased timeout', () {
       final Map<String, String> res = AwsHttpRequest.getHeaders(
@@ -332,15 +321,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         auth: 'auth',
         timeout: const Duration(milliseconds: 10),
       );
-      expect(
-        {
-          'Accept': '*/*',
-          'Content-Type': 'application/x-amz-json-1.1',
-          'Authorization': 'auth',
-          'x-amz-date': 'amzDate',
-        },
-        res,
-      );
+      expect({
+        'Accept': '*/*',
+        'Content-Type': 'application/x-amz-json-1.1',
+        'Authorization': 'auth',
+        'x-amz-date': 'amzDate',
+      }, res);
     });
   });
 
@@ -352,9 +338,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.DELETE, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.DELETE, $err');
+        },
+      );
     });
     test('AwsRequestType.GET', () {
       return AwsHttpRequest.getRequest(
@@ -363,9 +352,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.GET, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.GET, $err');
+        },
+      );
     });
     test('AwsRequestType.HEAD', () {
       return AwsHttpRequest.getRequest(
@@ -374,9 +366,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.HEAD, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.HEAD, $err');
+        },
+      );
     });
     test('AwsRequestType.PATCH', () {
       return AwsHttpRequest.getRequest(
@@ -385,9 +380,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.PATCH, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.PATCH, $err');
+        },
+      );
     });
     test('AwsRequestType.POST', () {
       return AwsHttpRequest.getRequest(
@@ -396,9 +394,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.POST, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.POST, $err');
+        },
+      );
     });
     test('AwsRequestType.PUT', () {
       return AwsHttpRequest.getRequest(
@@ -407,9 +408,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         headers: {},
         body: '',
         timeout: const Duration(seconds: 10),
-      ).then((value) {}, onError: (err) {
-        fail('Missing type! AwsRequestType.PUT, $err');
-      });
+      ).then(
+        (value) {},
+        onError: (err) {
+          fail('Missing type! AwsRequestType.PUT, $err');
+        },
+      );
     });
 
     test('failure', () {
@@ -420,12 +424,15 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         body: '',
         timeout: const Duration(seconds: 10),
         mockRequest: true,
-      ).then<Future<Response>>((val) {
-        fail('Mock client not detected!');
-      }, onError: (e) {
-        expect(e, isA<AwsRequestException>());
-        return Future(() => Response('body', 400));
-      });
+      ).then<Future<Response>>(
+        (val) {
+          fail('Mock client not detected!');
+        },
+        onError: (e) {
+          expect(e, isA<AwsRequestException>());
+          return Future(() => Response('body', 400));
+        },
+      );
     });
 
     test('mockFunction != null', () {
@@ -440,9 +447,12 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         body: '',
         timeout: const Duration(seconds: 10),
         mockFunction: mockFunction,
-      ).then((val) {}, onError: (Object error, StackTrace stackTrace) {
-        fail('$error');
-      });
+      ).then(
+        (val) {},
+        onError: (Object error, StackTrace stackTrace) {
+          fail('$error');
+        },
+      );
     });
 
     test('check MockClient', () {
@@ -452,11 +462,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
       );
 
       Future<Response> mockFunction(Request request) async {
-        return Response(
-          '',
-          500,
-          request: request,
-        );
+        return Response('', 500, request: request);
       }
 
       return AwsHttpRequest.getRequest(
@@ -468,18 +474,9 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855''',
         mockFunction: mockFunction,
         mockRequest: true,
       ).then((val) {
-        expect(
-          val.request!.url,
-          request.url,
-        );
-        expect(
-          val.request!.method,
-          request.method,
-        );
-        expect(
-          val.statusCode,
-          500,
-        );
+        expect(val.request!.url, request.url);
+        expect(val.request!.method, request.method);
+        expect(val.statusCode, 500);
       });
     });
   });
